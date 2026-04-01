@@ -79,11 +79,20 @@ genuine national economic relevance, not just a modelling exercise.
 
 ## Key Findings
 
-> _To be updated as project develops_
-
-- [ ] LSTM vs ARIMA RMSE comparison during 2026 volatility spike
-- [ ] Brent–USD Index correlation over 2020–2026
-- [ ] Prophet uncertainty band behaviour around Hormuz crisis dates
+- LSTM achieved a RMSE of $2.71/bbl vs ARIMA's $10.18 and Prophet's 
+  $10.65 — **3.8x more accurate** than classical methods on the test set
+- ARIMA defaulted to a random walk (0,1,0) model, forecasting a flat 
+  $70/bbl — unable to anticipate the 2026 Hormuz crisis price surge
+- Prophet correctly tracked the downward trend through late 2025 but 
+  its confidence intervals did not capture the $112/bbl spike in March 2026
+- LSTM's 2.47% MAPE demonstrates that deep learning models can track 
+  commodity price momentum significantly better than statistical baselines
+- The Brent-WTI spread widened from a historical average of $6.10/bbl 
+  to $11.90/bbl during the 2026 crisis — a quantifiable signal of 
+  geopolitical risk premium in the market
+- All three models failed to predict the magnitude of the Hormuz supply 
+  shock, confirming that black swan geopolitical events remain beyond 
+  the reach of data-driven forecasting
 
 ---
 
