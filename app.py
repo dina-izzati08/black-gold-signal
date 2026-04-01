@@ -21,12 +21,30 @@ C_BLUE   = '#378ADD'
 C_PURPLE = '#7F77DD'
 
 # ── Load historical data ──────────────────────────────────
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_data():
-    master = pd.read_csv(
-        "data/master_raw.csv",
-        index_col='date',
-        parse_dates=True
+    import yfinance as yf
+    start = "2010-01-01"
+    end   = pd.Timestamp.today().strftime('%Y-%m-%d')
+
+    def download_clean(ticker, col_name):
+        df = yf.download(ticker, start=start, end=end,
+                        auto_adjust=True, progress=False)
+        df = df[['Close']].copy()
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = [col_name]
+        else:
+            df.columns = [col_name]
+        df.index.name = 'date'
+        return df
+
+    brent = download_clean("BZ=F", "brent_price")
+    wti   = download_clean("CL=F", "wti_price")
+    usd   = download_clean("DX-Y.NYB", "usd_index")
+
+    master = brent.join(wti, how='left').join(usd, how='left')
+    master['brent_wti_spread'] = (
+        master['brent_price'] - master['wti_price']
     )
     return master.ffill()
 
