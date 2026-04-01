@@ -45,19 +45,20 @@ def get_live_price():
         return None, None, None
 
 # ── Load saved model forecasts ────────────────────────────
-@st.cache_data
 def load_forecasts():
     try:
-        arima   = pd.read_csv("data/forecast_arima.csv",
-                               index_col='date', parse_dates=True)
+        arima = pd.read_csv("data/forecast_arima.csv",
+                            parse_dates=['date']).set_index('date')
         prophet = pd.read_csv("data/forecast_prophet.csv",
-                               index_col='date', parse_dates=True)
-        lstm    = pd.read_csv("data/forecast_lstm.csv",
-                               index_col='date', parse_dates=True)
+                              parse_dates=['ds']).set_index('ds')
+        prophet.index.name = 'date'
+        lstm = pd.read_csv("data/forecast_lstm.csv",
+                           parse_dates=['date']).set_index('date')
         return arima, prophet, lstm
-    except:
+    except Exception as e:
+        st.error(f"Failed to load forecasts: {e}")
         return None, None, None
-
+    
 master = load_data()
 price_now, delta, pct = get_live_price()
 arima_fc, prophet_fc, lstm_fc = load_forecasts()
@@ -188,7 +189,7 @@ with tab1:
         legend=dict(orientation='h', y=1.02),
         margin=dict(t=40, b=40)
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     # Spread chart
     st.subheader("Brent–WTI Spread")
@@ -335,8 +336,7 @@ with tab3:
     st.divider()
     st.subheader("Key findings")
     st.markdown(f"""
-    - **LSTM achieved RMSE of $2.71/bbl** — 3.8x better than ARIMA ($10.18) 
-    and 3.9x better than Prophet ($10.65)
+    - **LSTM achieved RMSE of 2.71 USD/bbl** — 3.8x better than ARIMA (10.18) and 3.9x better than Prophet (10.65)
     - **ARIMA** defaulted to a random walk, forecasting a flat $70/bbl — 
     unable to anticipate the 2026 Hormuz crisis surge
     - **Prophet** tracked the downward trend well through late 2025 but 
