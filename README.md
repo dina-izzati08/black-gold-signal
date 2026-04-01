@@ -6,7 +6,7 @@
 ![Prophet](https://img.shields.io/badge/Prophet-1.1-orange)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.2-ee4c2c)
 
-> 🔴 **Live Dashboard:** _link will be added after deployment_
+> 🔴 **[Live Dashboard → ]:(https://black-gold-signal-ds.streamlit.app/)**
 
 ---
 
